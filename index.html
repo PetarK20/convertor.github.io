@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Converter</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-top: 10px;
+            color: #555;
+        }
+
+        button {
+            margin-top: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            color: #333; /* Default color for normal text */
+        }
+
+        #result.error {
+            color: #ff0000; /* Red color for error messages */
+        }
+
+        #bottom-text {
+            margin-top: 30px;
+            font-size: 18px;
+            color: #555;
+            text-align: center;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Flashing effect */
+        @keyframes flash {
+            0%, 100% {
+                background-color: #fff; /* Flashing color 1 (white) */
+            }
+            50% {
+                background-color: #ff0000; /* Flashing color 2 (red) */
+            }
+        }
+
+        .flashing {
+            animation: flash 0.5s ease 5; /* Flash 5 times in 2.5 seconds (0.5s x 5) */
+        }
+
+        #copyright {
+            margin-top: 20px;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to my Systems Converter</h1>
+
+        <div class="form-group">
+            <label for="sourceBase">Enter system to start (2 for binary, 10 for decimal, 16 for hexadecimal): </label>
+            <input type="number" class="form-control" id="sourceBase" min="2" max="16">
+        </div>
+
+        <div class="form-group">
+            <label for="number">Enter number: </label>
+            <input type="text" class="form-control" id="number">
+        </div>
+
+        <div class="form-group">
+            <label for="targetBase">Enter a system to convert to (2 for binary, 10 for decimal, 16 for hexadecimal): </label>
+            <input type="number" class="form-control" id="targetBase" min="2" max="16">
+        </div>
+
+        <button class="btn btn-primary btn-block" onclick="convertNumber()">Convert</button>
+
+        <p id="result" class="mt-3"></p>
+    </div>
+
+    <div id="bottom-text">22423</div>
+
+    <div id="copyright">&copy; 2023 PKolev20. All rights reserved.</div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function convertNumber() {
+            try {
+                var sourceBase = parseInt(document.getElementById("sourceBase").value);
+                var number = document.getElementById("number").value;
+                var targetBase = parseInt(document.getElementById("targetBase").value);
+
+                if (![2, 10, 16].includes(sourceBase) || ![2, 10, 16].includes(targetBase)) {
+                    throw new Error("Choose 2, 10, or 16");
+                }
+
+                var decimalNumber;
+
+                if (sourceBase === 2) {
+                    decimalNumber = parseInt(number, 2);
+                } else if (sourceBase === 16) {
+                    decimalNumber = parseInt(number, 16);
+                } else {
+                    decimalNumber = parseInt(number, 10);
+                }
+
+                var result;
+
+                if (targetBase === 2) {
+                    result = decimalNumber.toString(2);
+                } else if (targetBase === 16) {
+                    result = decimalNumber.toString(16);
+                } else {
+                    result = decimalNumber.toString(10);
+                }
+
+                // Display result without the 'error' class
+                document.getElementById("result").innerText = `Result: ${result}`;
+                document.getElementById("result").classList.remove("error");
+
+                // Remove flashing class if it was previously added
+                document.body.classList.remove("flashing");
+            } catch (error) {
+                // Display error message with the 'error' class
+                document.getElementById("result").innerText = `Error: ${error.message}`;
+                document.getElementById("result").classList.add("error");
+
+                // Add flashing class to body for the flashing effect
+                document.body.classList.add("flashing");
+
+                // Remove flashing class after a delay
+                setTimeout(function() {
+                    document.body.classList.remove("flashing");
+                }, 2500); // 2500 milliseconds (0.5s x 5 flashes)
+            }
+        }
+    </script>
+</body>
+</html>
